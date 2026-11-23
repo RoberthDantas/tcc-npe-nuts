@@ -1,5 +1,5 @@
-# Python 3.11. Versões não fixadas: as usadas nos resultados não foram registradas.
-# Para fixar, rode "pip freeze" no ambiente do TCC e copie as linhas destes pacotes.
+# Python 3.11. Ainda não fixei as versões que usei nos resultados.
+# Para fixar, rodo "pip freeze" no ambiente do TCC e copio as linhas destes pacotes.
 torch
 sbi
 pyro-ppl

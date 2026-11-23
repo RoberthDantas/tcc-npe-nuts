@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Se usar este código ou estes resultados, cite o trabalho abaixo."
+message: "Se você usar este código ou estes resultados, cite o meu trabalho abaixo."
 title: "Acurácia e eficiência computacional da inferência Bayesiana amortizada em um modelo ecológico com variáveis latentes"
 type: software
 authors:

@@ -1,10 +1,10 @@
 # Inferência Bayesiana amortizada (NPE) × NUTS em um modelo ecológico de captura
 
-Código, resultados e registros do Trabalho de Conclusão de Curso **"Acurácia e eficiência computacional da inferência Bayesiana amortizada em um modelo ecológico com variáveis latentes"**, de Roberth Dantas Gomes (Bacharelado Interdisciplinar em Ciência e Tecnologia do Mar, Instituto do Mar, Unifesp – Campus Baixada Santista, 2026).
+Neste repositório reúno o código, os resultados e os registros do meu Trabalho de Conclusão de Curso, **"Acurácia e eficiência computacional da inferência Bayesiana amortizada em um modelo ecológico com variáveis latentes"**, no Bacharelado Interdisciplinar em Ciência e Tecnologia do Mar (Instituto do Mar, Unifesp – Campus Baixada Santista, 2026).
 
-O trabalho compara a Estimação Neural da Distribuição Posterior (NPE, pacote [`sbi`](https://github.com/sbi-dev/sbi)) com o MCMC pelo No-U-Turn Sampler (NUTS, [Pyro](https://pyro.ai)). Os dois métodos são aplicados aos mesmos conjuntos de dados simulados, com o mesmo modelo, o mesmo espaço paramétrico e as mesmas distribuições a priori. A comparação mede quanto a NPE reproduz as posteriores do NUTS e a partir de quantos conjuntos analisados o custo inicial dela (simular e treinar) se paga.
+No trabalho, comparo a Estimação Neural da Distribuição Posterior (NPE, pacote [`sbi`](https://github.com/sbi-dev/sbi)) com o MCMC pelo No-U-Turn Sampler (NUTS, [Pyro](https://pyro.ai)). Aplico os dois métodos aos mesmos conjuntos de dados simulados, com o mesmo modelo, o mesmo espaço paramétrico e as mesmas distribuições a priori. Com isso, meço o quanto a NPE reproduz as posteriores do NUTS e a partir de quantos conjuntos analisados o custo inicial dela (simular e treinar) se paga.
 
-> **Situação:** pipeline completo e resultados finais gerados. O texto do TCC está em revisão com o orientador.
+> **Situação:** o pipeline está completo e os resultados finais já foram gerados. O texto do TCC está em revisão com o meu orientador.
 
 ## Modelo
 
@@ -14,7 +14,7 @@ $$N_{ir} \sim \text{Poisson}(\lambda), \qquad \eta_i \sim \text{Normal}(\mu_q, \
 
 $$Y_{ir} \mid N_{ir}, q_i \sim \text{Binomial}(N_{ir}, q_i), \qquad Y_{i+} = Y_{i1} + Y_{i2}$$
 
-Só a soma $Y_{i+}$ é observada. A abundância $\lambda$ e a eficiência de captura $q_i$ não são observadas diretamente, e combinações diferentes das duas geram contagens parecidas. Os parâmetros inferidos são $\theta = (\log\lambda,\ \mu_q,\ \log\sigma_q)$, com priors uniformes:
+Só a soma $Y_{i+}$ é observada. A abundância $\lambda$ e a eficiência de captura $q_i$ não são observadas diretamente, e combinações diferentes das duas geram contagens parecidas. Os parâmetros que infiro são $\theta = (\log\lambda,\ \mu_q,\ \log\sigma_q)$, com priors uniformes:
 
 | Parâmetro | Prior |
 | --- | --- |
@@ -22,14 +22,14 @@ Só a soma $Y_{i+}$ é observada. A abundância $\lambda$ e a eficiência de cap
 | $\mu_q$ | $U[-6,\ 0)$ |
 | $\log\sigma_q$ | $U[\log 0{,}2,\ \log 2{,}5)$ |
 
-- **NUTS:** usa a forma marginalizada $Y_{i+} \mid q_i \sim \text{Poisson}(2\lambda q_i)$, com $\eta_i = \mu_q + \sigma_q z_i$ (parametrização não centrada).
-- **NPE:** recebe as 30 contagens ordenadas em ordem crescente e transformadas por $\log(1 + y)$, e aprende $q_\phi(\theta \mid Y) \approx p(\theta \mid Y)$ com um fluxo normalizante (MAF, `NPE_C` do `sbi`).
+- **NUTS:** uso a forma marginalizada $Y_{i+} \mid q_i \sim \text{Poisson}(2\lambda q_i)$, com $\eta_i = \mu_q + \sigma_q z_i$ (parametrização não centrada).
+- **NPE:** a rede recebe as 30 contagens ordenadas em ordem crescente e transformadas por $\log(1 + y)$, e aprende $q_\phi(\theta \mid Y) \approx p(\theta \mid Y)$ com um fluxo normalizante (MAF, `NPE_C` do `sbi`).
 
 ## Principais resultados
 
-**Calibração da NPE (SBC, 1.000 conjuntos):** cobertura dos intervalos de 95% entre 0,926 e 0,936, com histogramas de rank em leve forma de U. Os intervalos da NPE são um pouco estreitos demais, mais em $\log\sigma_q$.
+**Calibração da NPE (SBC, 1.000 conjuntos):** a cobertura dos intervalos de 95% ficou entre 0,926 e 0,936, com histogramas de rank em leve forma de U. Ou seja, os intervalos da NPE saíram um pouco estreitos demais, sobretudo em $\log\sigma_q$.
 
-**Qualidade do NUTS como referência:** foi rodado em 60 dos 300 conjuntos de teste (20 por faixa de $\mu_q$). Os 19 conjuntos com divergências foram refeitos com passo menor. Depois disso, 56 dos 60 passam no critério moderado (R̂ ≤ 1,05, ESS ≥ 100, divergências ≤ 1%) e 35 no estrito (R̂ ≤ 1,01, ESS ≥ 400). Os quatro que não passam são todos da faixa $\mu_q \in [-2, 0)$.
+**Qualidade do NUTS como referência:** rodei o NUTS em 60 dos 300 conjuntos de teste (20 por faixa de $\mu_q$) e refiz com passo menor os 19 que tiveram divergências. Depois disso, 56 dos 60 passam no critério moderado (R̂ ≤ 1,05, ESS ≥ 100, divergências ≤ 1%) e 35 no estrito (R̂ ≤ 1,01, ESS ≥ 400). Os quatro que não passam são todos da faixa $\mu_q \in [-2, 0)$.
 
 **Concordância NPE × NUTS (critério moderado, medianas por faixa e parâmetro):**
 
@@ -50,15 +50,15 @@ Só a soma $Y_{i+}$ é observada. A abundância $\lambda$ e a eficiência de cap
 | Ponto de amortização $R^* = (T_{sim} + T_{train}) / (t_{NUTS} - t_{NPE})$ | **0,27 conjunto** |
 | 300 conjuntos | ~310 h no NUTS × ~17 min na NPE (≈ 1.088 vezes) |
 
-Como $R^* < 1$, o custo inicial da NPE já é menor que o de uma única inferência por NUTS.
+Como $R^* < 1$, o custo inicial da NPE já fica abaixo do de uma única inferência por NUTS.
 
-**Sensibilidade do treino (`11_estudo_treino.py`):** com 10.000 simulações a mediana de $\lvert D_\mu \rvert$ é 0,26. Com 100.000 cai para cerca de 0,07, e com 200.000 fica em 0,06. Cinco sementes com as mesmas 100.000 simulações dão medianas entre 0,065 e 0,115.
+**Sensibilidade do treino (`11_estudo_treino.py`):** com 10.000 simulações, a mediana de $\lvert D_\mu \rvert$ foi 0,26. Com 100.000 caiu para cerca de 0,07, e com 200.000 ficou em 0,06. Treinando com cinco sementes e as mesmas 100.000 simulações, obtive medianas entre 0,065 e 0,115.
 
 ## Estrutura do repositório
 
 ```
 .
-├── scripts/                 # pipeline numerado (no PC do autor, a pasta se chama teste/)
+├── scripts/                 # pipeline numerado (no meu computador, a pasta se chama teste/)
 │   ├── modelo.py            # simulador, priors, preparar_dados e PASTA_RESULTADOS
 │   ├── graficos.py          # figuras reutilizadas
 │   ├── testes_modelo.py     # testes automáticos do simulador
@@ -105,16 +105,18 @@ No Windows, rode cada script como arquivo, no terminal ou pelo botão "Executar 
 | Custos e ponto de amortização $R^*$ | `10_custos_amortizacao.py` | `custo_acumulado.png` | segundos |
 | Sensibilidade do treino (orçamento de simulação e sementes) | `11_estudo_treino.py` | `estudo_treino/` | ~3 h 30 |
 
-Os resultados de todas as etapas já estão em `resultados/`. Para refazer só a comparação e os custos, basta rodar o `09` e o `10`, sem repetir as dezenas de horas de NUTS. O `08` e o `11` retomam de onde pararam, porque cada conjunto ou treino é salvo assim que termina.
+Deixei em `resultados/` as saídas de todas as etapas. Para refazer só a comparação e os custos, basta rodar o `09` e o `10`, sem repetir as dezenas de horas de NUTS. O `08` e o `11` retomam de onde pararam, porque cada conjunto ou treino é salvo assim que termina.
 
 ### Cuidados
 
-- **Ordem das contagens:** a NPE foi treinada com as contagens em ordem **crescente** (`preparar_dados` em `modelo.py`). Mudar essa ordem não dá erro, mas torna os resultados errados. Exige refazer o `02` e o `03`.
-- **Sementes:** cada etapa usa uma semente fixa, indicada no cabeçalho do script. Treino (42), SBC (7), teste (2027) e 200.000 simulações do estudo de treino (2028) são independentes entre si.
-- **Versão do PyTorch:** a mesma semente reproduz exatamente os parâmetros sorteados, mas as contagens simuladas podem mudar um pouco entre versões do PyTorch. Rodando o `02` com outra versão, os 100.000 θ saíram idênticos e 97% das contagens coincidiram com as de `simulacoes_treino.pt`. Para refazer tudo bit a bit, use a mesma versão do PyTorch dos resultados.
-- **Cadeias do NUTS em sequência:** `num_chains > 1` do Pyro trava em Windows. Por isso, as 4 cadeias de cada conjunto rodam uma após a outra, e o paralelismo do `08` é entre conjuntos (3 processos de uma thread).
+- **Ordem das contagens:** treinei a NPE com as contagens em ordem **crescente** (`preparar_dados` em `modelo.py`). Mudar essa ordem não dá erro, mas deixa os resultados errados, e exige refazer o `02` e o `03`.
+- **Sementes:** cada etapa usa uma semente fixa, indicada no cabeçalho do script. As de treino (42), SBC (7), teste (2027) e das 200.000 simulações do estudo de treino (2028) são independentes entre si.
+- **Versão do PyTorch:** a mesma semente reproduz exatamente os parâmetros sorteados, mas as contagens simuladas podem mudar um pouco entre versões do PyTorch. Rodei o `02` com outra versão: os 100.000 θ saíram idênticos e 97% das contagens coincidiram com as de `simulacoes_treino.pt`. Para refazer tudo bit a bit, use a mesma versão do PyTorch que eu usei.
+- **Cadeias do NUTS em sequência:** o `num_chains > 1` do Pyro trava no Windows. Por isso, as 4 cadeias de cada conjunto rodam uma após a outra, e o paralelismo do `08` é entre conjuntos (3 processos de uma thread).
 
 ## Ambiente computacional dos resultados
+
+Gerei todos os resultados no meu computador:
 
 | Item | Configuração |
 | --- | --- |
@@ -122,9 +124,9 @@ Os resultados de todas as etapas já estão em `resultados/`. Para refazer só a
 | Python | 3.11.16 (ambiente conda) |
 | Processador | AMD Ryzen 7 4800HS, 2,9 GHz, 8 núcleos |
 | Memória | 8 GB |
-| GPU | Radeon Graphics integrada (não usada; tudo em CPU) |
+| GPU | Radeon Graphics integrada (não usada; tudo rodou em CPU) |
 
-Os tempos são de relógio (wall-clock). O NUTS do `08` rodou com 3 conjuntos ao mesmo tempo (mediana de 59,9 min por conjunto). O $R^*$ usa os 62,0 min de um conjunto rodado sozinho (`06`).
+Os tempos são de relógio (wall-clock). No `08`, rodei o NUTS com 3 conjuntos ao mesmo tempo (mediana de 59,9 min por conjunto). Para o $R^*$, usei os 62,0 min de um conjunto rodado sozinho (`06`).
 
 ## Referências
 
@@ -137,6 +139,6 @@ Os tempos são de relógio (wall-clock). O NUTS do `08` rodou com 3 conjuntos ao
 
 ## Autoria e uso
 
-Autor: Roberth Dantas Gomes. Os arquivos `modelo.py`, `graficos.py`, `testes_modelo.py` e as etapas `01` a `03` partem do código de referência fornecido pelo orientador; `modelo.py` e `graficos.py` foram adaptados para este pipeline.
+Sou o autor deste trabalho, Roberth Dantas Gomes. Os arquivos `modelo.py`, `graficos.py`, `testes_modelo.py` e as etapas `01` a `03` partem do código de referência que meu orientador me forneceu; adaptei o `modelo.py` e o `graficos.py` para este pipeline.
 
-Nenhuma licença foi definida até agora: o conteúdo pode ser consultado, mas o reuso depende de autorização do autor. Para citar, use o arquivo `CITATION.cff` (botão "Cite this repository" do GitHub).
+Ainda não defini uma licença: o conteúdo pode ser consultado, mas o reuso depende da minha autorização. Para citar, use o arquivo `CITATION.cff` (botão "Cite this repository" do GitHub).
