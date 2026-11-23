@@ -139,6 +139,6 @@ Os tempos são de relógio (wall-clock). No `08`, rodei o NUTS com 3 conjuntos a
 
 ## Autoria e uso
 
-Sou o autor deste trabalho, Roberth Dantas Gomes. Os arquivos `modelo.py`, `graficos.py`, `testes_modelo.py` e as etapas `01` a `03` partem do código de referência que meu orientador me forneceu; adaptei o `modelo.py` e o `graficos.py` para este pipeline.
+Sou o autor deste trabalho, Roberth Dantas Gomes, desenvolvido sob orientação do Prof. Dr. Fabio Cop Ferreira. Os arquivos `modelo.py`, `graficos.py`, `testes_modelo.py` e as etapas `01` a `03` partem do código de referência que meu orientador me forneceu; adaptei o `modelo.py` e o `graficos.py` para este pipeline.
 
-Ainda não defini uma licença: o conteúdo pode ser consultado, mas o reuso depende da minha autorização. Para citar, use o arquivo `CITATION.cff` (botão "Cite this repository" do GitHub).
+Ainda não defini uma licença: o conteúdo pode ser consultado, mas o reuso depende do aceite meu e do Prof. Dr. Fabio Cop Ferreira. Para citar, use o arquivo `CITATION.cff` (botão "Cite this repository" do GitHub).
