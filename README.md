@@ -61,7 +61,8 @@ Como $R^* < 1$, o custo inicial da NPE já é menor que o de uma única inferên
 ├── scripts/                 # pipeline numerado (no PC do autor, a pasta se chama teste/)
 │   ├── modelo.py            # simulador, priors, preparar_dados e PASTA_RESULTADOS
 │   ├── graficos.py          # figuras reutilizadas
-│   ├── 04_calibracao_sbc.py ... 11_estudo_treino.py
+│   ├── testes_modelo.py     # testes automáticos do simulador
+│   ├── 01_explorar_modelo.py ... 11_estudo_treino.py
 ├── resultados/              # saídas de cada etapa (ver resultados/README.md)
 ├── legado/                  # protótipos que não fazem parte do pipeline final
 ├── requirements.txt
@@ -79,7 +80,8 @@ python -m venv .venv            # Python 3.11
 .venv\Scripts\activate          # Windows (no Linux/macOS: source .venv/bin/activate)
 pip install -r requirements.txt
 cd scripts
-python 04_calibracao_sbc.py     # e assim por diante, na ordem abaixo
+python testes_modelo.py         # confere o simulador
+python 02_simular_treino.py     # e assim por diante, na ordem abaixo
 ```
 
 No Windows, rode cada script como arquivo, no terminal ou pelo botão "Executar arquivo Python" do VS Code, e não na janela interativa. O `08` e o `08b` usam vários processos, que travam quando iniciados de um notebook ou da janela interativa.
@@ -88,9 +90,10 @@ No Windows, rode cada script como arquivo, no terminal ou pelo botão "Executar 
 
 | Etapa | Script | Saída em `resultados/` | Tempo aproximado |
 | --- | --- | --- | --- |
-| Explorar o modelo e etapa piloto | `01_explorar_modelo.py` ⚠️ | gráficos | — |
-| Simular 100.000 conjuntos de treino (semente 42) | `02_simular_treino.py` ⚠️ | `simulacoes_treino.pt` | 40 s |
-| Treinar a NPE (`NPE_C`, MAF) | `03_treinar_npe.py` ⚠️ | `npe_treinada.pt` | 16 min |
+| Testes automáticos do simulador | `testes_modelo.py` | — | segundos |
+| Explorar o modelo (figuras de um conjunto simulado) | `01_explorar_modelo.py` | — (figuras na tela) | segundos |
+| Simular 100.000 conjuntos de treino (semente 42) e etapa piloto | `02_simular_treino.py` | `simulacoes_treino.pt` | 40 s |
+| Treinar a NPE (`NPE_C`, MAF) | `03_treinar_npe.py` | `npe_treinada.pt` | 16 min |
 | Calibração por SBC (1.000 conjuntos, semente 7) | `04_calibracao_sbc.py` | `sbc_npe.png`, `sbc_npe.pt` | minutos |
 | 300 conjuntos de teste, 100 por faixa de $\mu_q$ (semente 2027) | `05_gerar_teste.py` | `conjuntos_teste.pt` | segundos |
 | NUTS em um conjunto (validação inicial) | `06_inferencia_nuts.py` | `nuts_teste_unico.pt` | ~1 h |
@@ -102,14 +105,13 @@ No Windows, rode cada script como arquivo, no terminal ou pelo botão "Executar 
 | Custos e ponto de amortização $R^*$ | `10_custos_amortizacao.py` | `custo_acumulado.png` | segundos |
 | Sensibilidade do treino (orçamento de simulação e sementes) | `11_estudo_treino.py` | `estudo_treino/` | ~3 h 30 |
 
-⚠️ **Ainda não estão neste repositório:** `01_explorar_modelo.py`, `02_simular_treino.py`, `03_treinar_npe.py` e `testes_modelo.py` (testes automáticos do simulador). Eles vieram do código de referência do orientador e serão adicionados. Enquanto isso, as saídas deles (`simulacoes_treino.pt` e `npe_treinada.pt`) já estão em `resultados/`, então dá para rodar do `04` em diante.
-
 Os resultados de todas as etapas já estão em `resultados/`. Para refazer só a comparação e os custos, basta rodar o `09` e o `10`, sem repetir as dezenas de horas de NUTS. O `08` e o `11` retomam de onde pararam, porque cada conjunto ou treino é salvo assim que termina.
 
 ### Cuidados
 
 - **Ordem das contagens:** a NPE foi treinada com as contagens em ordem **crescente** (`preparar_dados` em `modelo.py`). Mudar essa ordem não dá erro, mas torna os resultados errados. Exige refazer o `02` e o `03`.
 - **Sementes:** cada etapa usa uma semente fixa, indicada no cabeçalho do script. Treino (42), SBC (7), teste (2027) e 200.000 simulações do estudo de treino (2028) são independentes entre si.
+- **Versão do PyTorch:** a mesma semente reproduz exatamente os parâmetros sorteados, mas as contagens simuladas podem mudar um pouco entre versões do PyTorch. Rodando o `02` com outra versão, os 100.000 θ saíram idênticos e 97% das contagens coincidiram com as de `simulacoes_treino.pt`. Para refazer tudo bit a bit, use a mesma versão do PyTorch dos resultados.
 - **Cadeias do NUTS em sequência:** `num_chains > 1` do Pyro trava em Windows. Por isso, as 4 cadeias de cada conjunto rodam uma após a outra, e o paralelismo do `08` é entre conjuntos (3 processos de uma thread).
 
 ## Ambiente computacional dos resultados
@@ -135,6 +137,6 @@ Os tempos são de relógio (wall-clock). O NUTS do `08` rodou com 3 conjuntos ao
 
 ## Autoria e uso
 
-Autor: Roberth Dantas Gomes. Os arquivos `modelo.py` e `graficos.py` partem do código de referência fornecido pelo orientador e foram adaptados para este pipeline.
+Autor: Roberth Dantas Gomes. Os arquivos `modelo.py`, `graficos.py`, `testes_modelo.py` e as etapas `01` a `03` partem do código de referência fornecido pelo orientador; `modelo.py` e `graficos.py` foram adaptados para este pipeline.
 
 Nenhuma licença foi definida até agora: o conteúdo pode ser consultado, mas o reuso depende de autorização do autor. Para citar, use o arquivo `CITATION.cff` (botão "Cite this repository" do GitHub).
