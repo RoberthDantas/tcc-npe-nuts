@@ -1,0 +1,11 @@
+# Python 3.11. Versões não fixadas: as usadas nos resultados não foram registradas.
+# Para fixar, rode "pip freeze" no ambiente do TCC e copie as linhas destes pacotes.
+torch
+sbi
+pyro-ppl
+arviz
+numpy
+pandas
+scipy
+matplotlib
+tensorboard  # opcional: só para ver resultados/registros_treino_npe

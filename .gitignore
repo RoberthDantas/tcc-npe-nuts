@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Gerados ao rodar os scripts
+scripts/sbi-logs/
+sbi-logs/
+resultados/nuts_lote/*.erro.txt
+resultados/nuts_lote_refeito/*.erro.txt
+resultados/estudo_treino/run_*.pt
+resultados/estudo_treino/rede_original_metricas.pt
+
+# Documentos do texto do TCC (ficam fora do repositório)
+*.docx
+~$*

@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "Se usar este código ou estes resultados, cite o trabalho abaixo."
+title: "Acurácia e eficiência computacional da inferência Bayesiana amortizada em um modelo ecológico com variáveis latentes"
+type: software
+authors:
+  - family-names: "Dantas Gomes"
+    given-names: "Roberth"
+    affiliation: "Universidade Federal de São Paulo (Unifesp), Instituto do Mar"
+date-released: "2026-11-23"
+keywords:
+  - inferência Bayesiana amortizada
+  - neural posterior estimation
+  - simulation-based inference
+  - NUTS
+  - modelo de captura
+  - variáveis latentes
+references:
+  - type: thesis
+    title: "Acurácia e eficiência computacional da inferência Bayesiana amortizada em um modelo ecológico com variáveis latentes"
+    authors:
+      - family-names: "Dantas Gomes"
+        given-names: "Roberth"
+    thesis-type: "Trabalho de Conclusão de Curso (Bacharelado Interdisciplinar em Ciência e Tecnologia do Mar)"
+    institution:
+      name: "Universidade Federal de São Paulo"
+      city: "Santos"
+    year: 2026
